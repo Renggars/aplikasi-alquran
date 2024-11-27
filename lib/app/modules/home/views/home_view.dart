@@ -1,5 +1,6 @@
 // import 'package:aplikasi_alquran/app/data/models/surah.dart';
 import 'package:aplikasi_alquran/app/constant/color.dart';
+import 'package:aplikasi_alquran/app/data/models/juz.dart' as juz;
 import 'package:aplikasi_alquran/app/data/models/surah.dart';
 import 'package:aplikasi_alquran/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -192,34 +193,67 @@ class HomeView extends GetView<HomeController> {
                         }
                       },
                     ),
-                    ListView.builder(
-                        itemCount: 30,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            onTap: () {},
-                            leading: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    "assets/images/list.png",
+                    FutureBuilder<List<juz.Juz>>(
+                      future: controller.getAllJuz(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: Text("Tidak ada data"),
+                          );
+                        } else {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              juz.Juz detailJuz = snapshot.data![index];
+                              return ListTile(
+                                onTap: () => Get.toNamed(
+                                  Routes.DETAIL_JUZ,
+                                  arguments: detailJuz,
+                                ),
+                                leading: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/list.png",
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "${index + 1}",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "${index + 1}",
-                                  style: Theme.of(context).textTheme.bodyLarge,
+                                title: Text(
+                                  "Juz ${index + 1}",
                                 ),
-                              ),
-                            ),
-                            title: Text(
-                              "Juz ${index + 1}",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                                isThreeLine: true,
+                                subtitle: Column(
+                                  children: [
+                                    Text(
+                                      "${detailJuz.juzStartInfo} Ayat",
+                                    ),
+                                    Text(
+                                      "${detailJuz.juzEndInfo} Ayat",
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
-                        }),
+                        }
+                      },
+                    ),
                     Center(
                       child: Text("Bookmark"),
                     ),

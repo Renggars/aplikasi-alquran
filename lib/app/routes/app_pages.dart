@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/detail_juz/bindings/detail_juz_binding.dart';
+import '../modules/detail_juz/views/detail_juz_view.dart';
 import '../modules/detail_surah/bindings/detail_surah_binding.dart';
 import '../modules/detail_surah/views/detail_surah_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -21,12 +23,12 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => const HomeView(),
+      page: () => HomeView(),
       binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.INTRODUCTION,
-      page: () => const IntroductionView(),
+      page: () => IntroductionView(),
       binding: IntroductionBinding(),
     ),
     GetPage(
@@ -43,6 +45,11 @@ class AppPages {
       name: _Paths.LAST_READ,
       page: () => const LastReadView(),
       binding: LastReadBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_JUZ,
+      page: () => DetailJuzView(),
+      binding: DetailJuzBinding(),
     ),
   ];
 }
