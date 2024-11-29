@@ -29,6 +29,12 @@ class DetailJuzView extends GetView<DetailJuzController> {
             );
           }
           juz.Verses ayat = detailJuz.verses![index];
+          if (index != 0) {
+            if (ayat.number?.inSurah == 1) {
+              controller.index++;
+            }
+          }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -41,22 +47,33 @@ class DetailJuzView extends GetView<DetailJuzController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/images/list.png",
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 10),
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/list.png",
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "${ayat.number?.inSurah}",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
                             ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "${ayat.number?.inSurah}",
+                          Text(
+                            // ignore: unnecessary_string_interpolations
+                            "${allSurahInThisJuz[controller.index].name?.transliteration?.id ?? ""}",
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                        ),
+                        ],
                       ),
                       Row(children: [
                         IconButton(

@@ -231,7 +231,8 @@ class HomeView extends GetView<HomeController> {
                               for (Surah item
                                   in rawAllSurahInJuz.reversed.toList()) {
                                 allSurahInJuz.add(item);
-                                if (item.name!.transliteration!.id == nameEnd) {
+                                if (item.name!.transliteration!.id ==
+                                    nameStart) {
                                   break;
                                 }
                               }
