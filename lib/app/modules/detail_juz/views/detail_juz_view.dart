@@ -1,12 +1,15 @@
 import 'package:aplikasi_alquran/app/data/models/juz.dart' as juz;
+import 'package:aplikasi_alquran/app/data/models/surah.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/detail_juz_controller.dart';
 
+// ignore: use_key_in_widget_constructors
 class DetailJuzView extends GetView<DetailJuzController> {
-  final juz.Juz detailJuz = Get.arguments;
+  final juz.Juz detailJuz = Get.arguments['juz'];
+  final List<Surah> allSurahInThisJuz = Get.arguments['surah'];
 
   @override
   Widget build(BuildContext context) {
