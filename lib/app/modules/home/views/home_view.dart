@@ -202,7 +202,9 @@ class HomeView extends GetView<HomeController> {
                             child: CircularProgressIndicator(),
                           );
                         }
-                        if (!snapshot.hasData) {
+                        if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty ||
+                            snapshot.data == null) {
                           return const Center(
                             child: Text("Tidak ada data"),
                           );
@@ -215,7 +217,7 @@ class HomeView extends GetView<HomeController> {
                             return ListTile(
                               onTap: () => Get.toNamed(
                                 Routes.DETAIL_JUZ,
-                                arguments: {dataMapPerJuz},
+                                arguments: dataMapPerJuz,
                               ),
                               leading: Container(
                                 height: 50,
@@ -242,10 +244,10 @@ class HomeView extends GetView<HomeController> {
                               subtitle: Column(
                                 children: [
                                   Text(
-                                    "Mulai dari ${dataMapPerJuz["start"]["surah"]} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                    "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
                                   ),
                                   Text(
-                                    "Mulai dari ${dataMapPerJuz["end"]["surah"]} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                    "Mulai dari ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
                                   ),
                                 ],
                               ),

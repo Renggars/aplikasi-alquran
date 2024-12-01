@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/detail_juz_controller.dart';
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart' as detail;
+import '../controllers/detail_juz_controller.dart';
 
 // ignore: use_key_in_widget_constructors
 class DetailJuzView extends GetView<DetailJuzController> {
@@ -29,43 +29,63 @@ class DetailJuzView extends GetView<DetailJuzController> {
 
           Map<String, dynamic> ayat = dataMapPerJuz["verses"][index];
 
+          detail.DetailSurah surah = ayat["surah"];
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if ((ayat["ayat"] as detail.Verse).number?.inSurah == 1)
-                Column(mainAxisSize: MainAxisSize.min, children: [
-                  GestureDetector(
-                    // onTap: () => Get.defaultDialog(
-                    //   contentPadding: EdgeInsets.symmetric(
-                    //     horizontal: 20,
-                    //     vertical: 10,
-                    //   ),
-                    //   title: "Tafsir ${surah.name?.transliteration?.id}",
-                    //   content: Text("${surah.tafsir?.id}"),
-                    // ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(colors: [
-                          appLightPurple1,
-                          appDarkPurple,
-                        ]),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          "${ayat["surah"]}",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: appWhite,
+                GestureDetector(
+                  onTap: () => Get.defaultDialog(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    title: "Tafsir ${surah.name?.transliteration?.id}",
+                    content: Text("${surah.tafsir?.id}"),
+                  ),
+                  child: Container(
+                    width: Get.width,
+                    margin: EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(colors: [
+                        appLightPurple1,
+                        appDarkPurple,
+                      ]),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "${surah.name?.transliteration?.id?.toUpperCase()}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: appWhite,
+                            ),
                           ),
-                        ),
+                          Text(
+                            "( ${surah.name?.translation?.id?.toUpperCase()} )",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: appWhite,
+                            ),
+                          ),
+                          Text(
+                            "${surah.numberOfVerses.toString()} Ayat | ${surah.revelation?.id}",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: appWhite,
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                ]),
+                ),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -97,7 +117,7 @@ class DetailJuzView extends GetView<DetailJuzController> {
                             ),
                           ),
                           Text(
-                            "${ayat["surah"]}",
+                            surah.name?.transliteration?.id ?? "",
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         ],
@@ -136,7 +156,7 @@ class DetailJuzView extends GetView<DetailJuzController> {
               SizedBox(height: 15),
               Text(
                 "${(ayat["ayat"] as detail.Verse).translation?.id}",
-                textAlign: TextAlign.justify,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 20,
                 ),
