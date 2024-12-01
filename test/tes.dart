@@ -9,16 +9,30 @@
 // [
 //   {
 //     "juz": 1,
-//     "start": Ayat,
-//     "end": Ayat,
+//     "start": {
+//       "surah": "...",
+//       "ayat": Ayat,
+//       },
+//     "end": {
+//       "surah": "...",
+//       "ayat": Ayat,
+//       },
 //     "verses": [...]
 //   },
-//   {
-//     "juz": 1,
-//     "start": Ayat,
-//     "end": Ayat,
+//    {
+//     "juz": 2,
+//     "start": {
+//       "surah": "...",
+//       "ayat": Ayat,
+//       },
+//     "end": {
+//       "surah": "...",
+//       "ayat": Ayat,
+//       },
 //     "verses": [...]
-//   }
+//   },
+
+//   ... sampai juz 30
 // ]
 
 // List<Map<String, dynamic>>
@@ -72,7 +86,7 @@ void main() async {
             "verse": penampungAyat,
           });
           juz++;
-          penampungAyat.clear();
+          penampungAyat = [];
           penampungAyat.add({
             "surah": data.name?.transliteration?.id ?? "",
             "ayat": ayat,

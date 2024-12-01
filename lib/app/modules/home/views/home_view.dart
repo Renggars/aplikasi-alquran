@@ -1,6 +1,5 @@
 // import 'package:aplikasi_alquran/app/data/models/surah.dart';
 import 'package:aplikasi_alquran/app/constant/color.dart';
-import 'package:aplikasi_alquran/app/data/models/juz.dart' as juz;
 import 'package:aplikasi_alquran/app/data/models/surah.dart';
 import 'package:aplikasi_alquran/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
+import 'package:aplikasi_alquran/app/data/models/detail_surah.dart' as detail;
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -193,7 +193,7 @@ class HomeView extends GetView<HomeController> {
                         }
                       },
                     ),
-                    FutureBuilder<List<juz.Juz>>(
+                    FutureBuilder<List<Map<String, dynamic>>>(
                       future: controller.getAllJuz(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -206,81 +206,52 @@ class HomeView extends GetView<HomeController> {
                           return const Center(
                             child: Text("Tidak ada data"),
                           );
-                        } else {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              juz.Juz detailJuz = snapshot.data![index];
-                              String nameStart =
-                                  detailJuz.juzStartInfo?.split(" - ").first ??
-                                      "";
-                              String nameEnd =
-                                  detailJuz.juzEndInfo?.split(" - ").first ??
-                                      "";
-
-                              List<Surah> rawAllSurahInJuz = [];
-                              List<Surah> allSurahInJuz = [];
-
-                              for (Surah item in controller.allSurah) {
-                                rawAllSurahInJuz.add(item);
-                                if (item.name!.transliteration!.id == nameEnd) {
-                                  break;
-                                }
-                              }
-
-                              for (Surah item
-                                  in rawAllSurahInJuz.reversed.toList()) {
-                                allSurahInJuz.add(item);
-                                if (item.name!.transliteration!.id ==
-                                    nameStart) {
-                                  break;
-                                }
-                              }
-
-                              return ListTile(
-                                onTap: () => Get.toNamed(
-                                  Routes.DETAIL_JUZ,
-                                  arguments: {
-                                    "juz": detailJuz,
-                                    "surah": allSurahInJuz.reversed.toList(),
-                                  },
-                                ),
-                                leading: Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        "assets/images/list.png",
-                                      ),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${index + 1}",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                ),
-                                title: Text(
-                                  "Juz ${index + 1}",
-                                ),
-                                isThreeLine: true,
-                                subtitle: Column(
-                                  children: [
-                                    Text(
-                                      "${detailJuz.juzStartInfo} Ayat",
-                                    ),
-                                    Text(
-                                      "${detailJuz.juzEndInfo} Ayat",
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
                         }
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic> dataMapPerJuz =
+                                snapshot.data![index];
+                            return ListTile(
+                              onTap: () => Get.toNamed(
+                                Routes.DETAIL_JUZ,
+                                arguments: {dataMapPerJuz},
+                              ),
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/list.png",
+                                    ),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "${index + 1}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                "Juz ${index + 1}",
+                              ),
+                              isThreeLine: true,
+                              subtitle: Column(
+                                children: [
+                                  Text(
+                                    "Mulai dari ${dataMapPerJuz["start"]["surah"]} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                  ),
+                                  Text(
+                                    "Mulai dari ${dataMapPerJuz["end"]["surah"]} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                     Center(

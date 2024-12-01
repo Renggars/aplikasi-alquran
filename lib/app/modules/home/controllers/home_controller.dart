@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aplikasi_alquran/app/data/models/juz.dart';
+import 'package:aplikasi_alquran/app/data/models/detail_surah.dart';
 import 'package:get/get.dart';
 
 import 'package:aplikasi_alquran/app/data/models/surah.dart';
@@ -23,18 +23,53 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<List<Juz>> getAllJuz() async {
-    List<Juz> juzList = [];
-    for (int i = 1; i <= 30; i++) {
-      Uri url = Uri.parse('https://api.quran.gading.dev/juz/$i');
-      var res = await http.get(url);
+  Future<List<Map<String, dynamic>>> getAllJuz() async {
+    int juz = 1;
 
-      Map<String, dynamic> data =
-          (json.decode(res.body) as Map<String, dynamic>)['data'];
+    List<Map<String, dynamic>> penampungAyat = [];
+    List<Map<String, dynamic>> allJuz = [];
 
-      Juz juz = Juz.fromJson(data);
-      juzList.add(juz);
+    for (var i = 1; i <= 114; i++) {
+      var res =
+          await http.get(Uri.parse('https://api.quran.gading.dev/surah/$i'));
+      Map<String, dynamic> rawData = json.decode(res.body)['data'];
+      DetailSurah data = DetailSurah.fromJson(rawData);
+
+      if (data.verses != null) {
+        // ex: surah albaqoroh => ratusan ayat
+        // juz 1 => ayat 1 - 141
+        // juz 2 => ayat 142 - ...
+
+        for (var ayat in data.verses!) {
+          if (ayat.meta?.juz == juz) {
+            penampungAyat.add({
+              "surah": data.name?.transliteration?.id ?? "",
+              "ayat": ayat,
+            });
+          } else {
+            allJuz.add({
+              "juz": juz,
+              "start": penampungAyat[0],
+              "end": penampungAyat[penampungAyat.length - 1],
+              "verse": penampungAyat,
+            });
+            juz++;
+            penampungAyat = [];
+            penampungAyat.add({
+              "surah": data.name?.transliteration?.id ?? "",
+              "ayat": ayat,
+            });
+          }
+        }
+      }
     }
-    return juzList;
+    allJuz.add({
+      "juz": juz,
+      "start": penampungAyat[0],
+      "end": penampungAyat[penampungAyat.length - 1],
+      "verse": penampungAyat,
+    });
+
+    return allJuz;
   }
 }
