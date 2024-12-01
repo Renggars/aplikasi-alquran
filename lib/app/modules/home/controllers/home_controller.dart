@@ -1,14 +1,34 @@
 import 'dart:convert';
 
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:aplikasi_alquran/app/data/models/surah.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   List<Surah> allSurah = [];
   RxBool isDarkMode = false.obs;
+
+  void changeTheme() async {
+    Get.isDarkMode
+        ? Get.changeTheme(ThemeData.light())
+        : Get.changeTheme(ThemeData.dark());
+    isDarkMode.toggle();
+
+    final box = GetStorage();
+
+    if (Get.isDarkMode) {
+      // dark -> light
+      box.remove("themeDark");
+    } else {
+      // light -> dark
+      box.write('themeDark', true);
+    }
+  }
+
   Future<List<Surah>> getAllSurah() async {
     Uri url = Uri.parse('https://api.quran.gading.dev/surah');
     var res = await http.get(url);
@@ -32,44 +52,64 @@ class HomeController extends GetxController {
     for (var i = 1; i <= 114; i++) {
       var res =
           await http.get(Uri.parse('https://api.quran.gading.dev/surah/$i'));
-      Map<String, dynamic> rawData = json.decode(res.body)['data'];
+      if (res.statusCode != 200) {
+        print("Error: Failed to fetch surah $i");
+        continue;
+      }
+
+      Map<String, dynamic>? rawData = json.decode(res.body)['data'];
+      if (rawData == null) {
+        print("Error: Data for surah $i is null");
+        continue;
+      }
+
       DetailSurah data = DetailSurah.fromJson(rawData);
 
-      if (data.verses != null) {
-        // ex: surah albaqoroh => ratusan ayat
-        // juz 1 => ayat 1 - 141
-        // juz 2 => ayat 142 - ...
+      if (data.verses == null || data.verses!.isEmpty) {
+        print("Error: No verses found for surah $i");
+        continue;
+      }
 
-        for (var ayat in data.verses!) {
-          if (ayat.meta?.juz == juz) {
-            penampungAyat.add({
-              "surah": data,
-              "ayat": ayat,
-            });
-          } else {
+      for (var ayat in data.verses!) {
+        if (ayat.meta?.juz == null) {
+          print("Error: Juz is null for ayat ${ayat.number?.inSurah}");
+          continue;
+        }
+
+        if (ayat.meta!.juz == juz) {
+          penampungAyat.add({
+            "surah": data,
+            "ayat": ayat,
+          });
+        } else {
+          if (penampungAyat.isNotEmpty) {
             allJuz.add({
               "juz": juz,
               "start": penampungAyat[0],
               "end": penampungAyat[penampungAyat.length - 1],
               "verse": penampungAyat,
             });
-            juz++;
-            penampungAyat = [];
-            penampungAyat.add({
-              "surah": data,
-              "ayat": ayat,
-            });
           }
+          juz++;
+          penampungAyat = [];
+          penampungAyat.add({
+            "surah": data,
+            "ayat": ayat,
+          });
         }
       }
     }
-    allJuz.add({
-      "juz": juz,
-      "start": penampungAyat[0],
-      "end": penampungAyat[penampungAyat.length - 1],
-      "verse": penampungAyat,
-    });
 
+    if (penampungAyat.isNotEmpty) {
+      allJuz.add({
+        "juz": juz,
+        "start": penampungAyat[0],
+        "end": penampungAyat[penampungAyat.length - 1],
+        "verse": penampungAyat,
+      });
+    }
+
+    print("Data successfully processed: ${allJuz.length} juz found");
     return allJuz;
   }
 }

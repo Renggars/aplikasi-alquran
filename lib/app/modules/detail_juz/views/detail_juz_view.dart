@@ -8,26 +8,33 @@ import '../controllers/detail_juz_controller.dart';
 
 // ignore: use_key_in_widget_constructors
 class DetailJuzView extends GetView<DetailJuzController> {
-  final Map<String, dynamic> dataMapPerJuz = Get.arguments;
+  final Map<String, dynamic>? dataMapPerJuz = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
+    print("Data diterima di DetailJuzView: $dataMapPerJuz");
+    if (dataMapPerJuz == null || dataMapPerJuz!.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Detail Juz")),
+        body: Center(child: Text("Data tidak ditemukan.")),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text('JUZ ${dataMapPerJuz["juz"]}'),
+        title: Text('JUZ ${dataMapPerJuz?["juz"]}'),
         centerTitle: true,
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(20),
-        itemCount: (dataMapPerJuz["verses"] as List).length,
+        itemCount: (dataMapPerJuz?["verses"] as List).length,
         itemBuilder: (context, index) {
-          if ((dataMapPerJuz["verses"] as List).isEmpty) {
+          if ((dataMapPerJuz?["verses"] as List).isEmpty) {
             return Center(
               child: Text('Tidak ada data'),
             );
           }
 
-          Map<String, dynamic> ayat = dataMapPerJuz["verses"][index];
+          Map<String, dynamic> ayat = dataMapPerJuz?["verses"][index];
 
           detail.DetailSurah surah = ayat["surah"];
 

@@ -154,7 +154,7 @@ class HomeView extends GetView<HomeController> {
                               Surah surah = snapshot.data![index];
                               return ListTile(
                                 onTap: () => Get.toNamed(
-                                  Routes.DETAIL_SURAH,
+                                  Routes.DETAIL_JUZ,
                                   arguments: surah,
                                 ),
                                 leading: Container(
@@ -208,52 +208,53 @@ class HomeView extends GetView<HomeController> {
                           return const Center(
                             child: Text("Tidak ada data"),
                           );
-                        }
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            Map<String, dynamic> dataMapPerJuz =
-                                snapshot.data![index];
-                            return ListTile(
-                              onTap: () => Get.toNamed(
-                                Routes.DETAIL_JUZ,
-                                arguments: dataMapPerJuz,
-                              ),
-                              leading: Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      "assets/images/list.png",
+                        } else {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              Map<String, dynamic> dataMapPerJuz =
+                                  snapshot.data![index];
+                              return ListTile(
+                                onTap: () => Get.toNamed(
+                                  Routes.DETAIL_JUZ,
+                                  arguments: dataMapPerJuz,
+                                ),
+                                leading: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/list.png",
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "${index + 1}",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
                                     ),
                                   ),
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "${index + 1}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
+                                title: Text(
+                                  "Juz ${index + 1}",
                                 ),
-                              ),
-                              title: Text(
-                                "Juz ${index + 1}",
-                              ),
-                              isThreeLine: true,
-                              subtitle: Column(
-                                children: [
-                                  Text(
-                                    "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
-                                  ),
-                                  Text(
-                                    "Mulai dari ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                                isThreeLine: true,
+                                subtitle: Column(
+                                  children: [
+                                    Text(
+                                      "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                    ),
+                                    Text(
+                                      "Mulai dari ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
                       },
                     ),
                     Center(
@@ -267,12 +268,7 @@ class HomeView extends GetView<HomeController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.isDarkMode
-              ? Get.changeTheme(ThemeData.light())
-              : Get.changeTheme(ThemeData.dark());
-          controller.isDarkMode.toggle();
-        },
+        onPressed: () => controller.changeTheme(),
         child: Obx(
           () => Icon(
             Icons.add,
