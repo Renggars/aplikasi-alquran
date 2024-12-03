@@ -59,13 +59,14 @@ class Verses {
   Audio? audio;
   Tafsir? tafsir;
 
-  Verses(
-      {this.number,
-      this.meta,
-      this.text,
-      this.translation,
-      this.audio,
-      this.tafsir});
+  Verses({
+    this.number,
+    this.meta,
+    this.text,
+    this.translation,
+    this.audio,
+    this.tafsir,
+  });
 
   Verses.fromJson(Map<String, dynamic> json) {
     number = json['number'] != null ? Number.fromJson(json['number']) : null;
