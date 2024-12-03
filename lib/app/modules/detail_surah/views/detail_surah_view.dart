@@ -135,7 +135,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                             .collections_bookmark_outlined),
                                       ),
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          controller
+                                              .playAudio(ayat.audio?.primary);
+                                        },
                                         icon: Icon(Icons.play_arrow),
                                       ),
                                     ])
