@@ -128,20 +128,54 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         ),
                                       ),
                                     ),
-                                    Row(children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons
-                                            .collections_bookmark_outlined),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          controller
-                                              .playAudio(ayat.audio?.primary);
-                                        },
-                                        icon: Icon(Icons.play_arrow),
-                                      ),
-                                    ])
+                                    Obx(
+                                      () => Row(children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons
+                                              .collections_bookmark_outlined),
+                                        ),
+                                        (controller.kondisiAudio.value ==
+                                                "stop")
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  controller.playAudio(
+                                                      ayat.audio?.primary);
+                                                },
+                                                icon: Icon(Icons.play_arrow),
+                                              )
+                                            : Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  (controller.kondisiAudio
+                                                              .value ==
+                                                          "playing")
+                                                      ? IconButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .pauseAudio();
+                                                          },
+                                                          icon:
+                                                              Icon(Icons.pause),
+                                                        )
+                                                      : IconButton(
+                                                          onPressed: () {
+                                                            controller
+                                                                .resumeAudio();
+                                                          },
+                                                          icon: Icon(
+                                                              Icons.play_arrow),
+                                                        ),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      controller.stopAudio();
+                                                    },
+                                                    icon: Icon(Icons.stop),
+                                                  )
+                                                ],
+                                              )
+                                      ]),
+                                    )
                                   ],
                                 ),
                               ),
