@@ -8,7 +8,6 @@ import 'package:just_audio/just_audio.dart';
 
 class DetailSurahController extends GetxController {
   final player = AudioPlayer();
-  RxString kondisiAudio = "stop".obs;
 
   Future<DetailSurah> getDetailSurah(String id) async {
     Uri url = Uri.parse("https://api.quran.gading.dev/surah/$id");
@@ -20,17 +19,19 @@ class DetailSurahController extends GetxController {
     return DetailSurah.fromJson(data);
   }
 
-  void playAudio(String? url) async {
-    if (url != null) {
+  void playAudio(Verse? ayat) async {
+    if (ayat?.audio?.primary != null) {
       // Catching errors at load time
       try {
         await player
             .stop(); //mencegah terjadi penumpukan audio yang sedang diputar
-        await player.setUrl(url);
-        kondisiAudio.value = "playing";
+        await player.setUrl(ayat!.audio!.primary!);
+        ayat.kondisiAudio = "playing";
+        update();
         await player.play();
-        kondisiAudio.value = "stop";
+        ayat.kondisiAudio = "stop";
         await player.stop();
+        update();
       } on PlayerException catch (e) {
         Get.defaultDialog(
           title: "Terjadi Kesalahan",
@@ -55,10 +56,11 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void pauseAudio() async {
+  void pauseAudio(Verse ayat) async {
     try {
       await player.pause();
-      kondisiAudio.value = "pause";
+      ayat.kondisiAudio = "pause";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
         title: "Terjadi Kesalahan",
@@ -77,11 +79,13 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void resumeAudio() async {
+  void resumeAudio(Verse ayat) async {
     try {
-      kondisiAudio.value = "playing";
+      ayat.kondisiAudio = "playing";
+      update();
       await player.play();
-      kondisiAudio.value = "stop";
+      ayat.kondisiAudio = "stop";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
         title: "Terjadi Kesalahan",
@@ -100,10 +104,11 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  void stopAudio() async {
+  void stopAudio(Verse ayat) async {
     try {
       await player.stop();
-      kondisiAudio.value = "stop";
+      ayat.kondisiAudio = "stop";
+      update();
     } on PlayerException catch (e) {
       Get.defaultDialog(
         title: "Terjadi Kesalahan",
