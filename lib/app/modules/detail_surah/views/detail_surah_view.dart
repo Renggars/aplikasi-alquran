@@ -131,7 +131,30 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     GetBuilder<DetailSurahController>(
                                       builder: (c) => Row(children: [
                                         IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Get.defaultDialog(
+                                                title: "Bookmark",
+                                                middleText:
+                                                    "Pilih jenis Bookmark",
+                                                actions: [
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                appPurple),
+                                                    child: Text("LAST READ"),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                appPurple),
+                                                    child: Text("BOOKMARK"),
+                                                  ),
+                                                ]);
+                                          },
                                           icon: Icon(Icons
                                               .collections_bookmark_outlined),
                                         ),
