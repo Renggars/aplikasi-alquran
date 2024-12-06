@@ -257,9 +257,46 @@ class HomeView extends GetView<HomeController> {
                         }
                       },
                     ),
-                    Center(
-                      child: Text("Bookmark"),
-                    ),
+                    GetBuilder<HomeController>(builder: (c) {
+                      return FutureBuilder<List<Map<String, dynamic>>>(
+                        future: c.getBookmark(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (snapshot.data?.length == 0) {
+                            return Center(
+                              child: Text("Belum ada bookmark"),
+                            );
+                          }
+
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              Map<String, dynamic> dataBookmark =
+                                  snapshot.data![index];
+                              return ListTile(
+                                onTap: () {
+                                  print("data");
+                                },
+                                leading: CircleAvatar(
+                                  child: Text("${index + 1}"),
+                                ),
+                                title: Text(
+                                  "${dataBookmark["surah"]}",
+                                ),
+                                subtitle: Text(
+                                    "Ayat ${dataBookmark["ayat"]} via ${dataBookmark["via"]}"),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    })
                   ],
                 ),
               )

@@ -26,7 +26,7 @@ class DetailSurahController extends GetxController {
     } else {
       List checkData = await db.query("bookmark",
           where:
-              "surah = '${surah.name?.transliteration?.id}' and ayat = ${ayat.number?.inSurah} and juz = ${ayat.meta?.juz} and via = 'surah' and index_ayat = $indexAyat and last_read = 0");
+              'surah = "${surah.name?.transliteration?.id}" and ayat = ${ayat.number?.inSurah} and juz = ${ayat.meta?.juz} and via = "surah" and index_ayat = $indexAyat and last_read = 0');
       if (checkData.length != 0) {
         flagExist = true;
       }
