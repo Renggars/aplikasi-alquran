@@ -138,7 +138,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                     "Pilih jenis Bookmark",
                                                 actions: [
                                                   ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      c.addBookmark(
+                                                        true,
+                                                        snapshot.data!,
+                                                        ayat,
+                                                        index,
+                                                      );
+                                                    },
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                             backgroundColor:
@@ -146,7 +153,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                     child: Text("LAST READ"),
                                                   ),
                                                   ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      c.addBookmark(
+                                                        false,
+                                                        snapshot.data!,
+                                                        ayat,
+                                                        index,
+                                                      );
+                                                    },
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                             backgroundColor:

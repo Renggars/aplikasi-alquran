@@ -34,7 +34,7 @@ class DatabaseManager {
             ayat INTEGER NOT NULL,
             juz INTEGER NOT NULL,
             via TEXT NOT NULL,
-            index_ayat TEXT NOT NULL,
+            index_ayat INTEGER NOT NULL,
             last_read INTEGER DEFAULT 0
           )
           ''');
