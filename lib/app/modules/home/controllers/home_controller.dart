@@ -16,6 +16,19 @@ class HomeController extends GetxController {
 
   DatabaseManager database = DatabaseManager.instance;
 
+  Future<Map<String, dynamic>?> getLastRead() async {
+    Database db = await database.db;
+    List<Map<String, dynamic>> dataLastRead =
+        await db.query("bookmark", where: "last_read = 1");
+    if (dataLastRead.isEmpty) {
+      // tidak ada data last read
+      return null;
+    } else {
+      // ada data => ambil index ke 0 (karena cuma ada 1 data di dalam list)
+      return dataLastRead.first;
+    }
+  }
+
   void deleteBookmark(int id) async {
     Database db = await database.db;
 
