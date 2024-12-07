@@ -25,16 +25,18 @@ class DetailSurahController extends GetxController {
       await db.delete("bookmark", where: "last_read = 1");
     } else {
       List checkData = await db.query("bookmark",
+          columns: ["surah", "ayat", "juz", "via", "index_ayat", "last_read"],
           where:
-              'surah = "${surah.name?.transliteration?.id}" and ayat = ${ayat.number?.inSurah} and juz = ${ayat.meta?.juz} and via = "surah" and index_ayat = $indexAyat and last_read = 0');
-      if (checkData.length != 0) {
+              "surah = '${surah.name!.transliteration!.id!.replaceAll("'", "+")}' and ayat = ${ayat.number?.inSurah} and juz = ${ayat.meta?.juz} and via = 'surah' and index_ayat = $indexAyat and last_read = 0");
+
+      if (checkData.isNotEmpty) {
         flagExist = true;
       }
     }
 
     if (flagExist == false) {
       db.insert("bookmark", {
-        "surah": "${surah.name?.transliteration?.id}",
+        "surah": surah.name!.transliteration!.id!.replaceAll("'", "+"),
         "ayat": ayat.number?.inSurah,
         "juz": ayat.meta?.juz,
         "via": "surah",

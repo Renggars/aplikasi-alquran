@@ -281,16 +281,25 @@ class HomeView extends GetView<HomeController> {
                                   snapshot.data![index];
                               return ListTile(
                                 onTap: () {
-                                  print("data");
+                                  // print("data");
                                 },
                                 leading: CircleAvatar(
                                   child: Text("${index + 1}"),
                                 ),
                                 title: Text(
-                                  "${dataBookmark["surah"]}",
+                                  dataBookmark["surah"]
+                                      .toString()
+                                      .replaceAll("+", "'"),
                                 ),
                                 subtitle: Text(
                                     "Ayat ${dataBookmark["ayat"]} via ${dataBookmark["via"]}"),
+                                trailing: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                ),
                               );
                             },
                           );
