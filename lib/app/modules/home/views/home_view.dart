@@ -268,7 +268,7 @@ class HomeView extends GetView<HomeController> {
                             );
                           }
 
-                          if (snapshot.data?.length == 0) {
+                          if (snapshot.data!.isEmpty) {
                             return Center(
                               child: Text("Belum ada bookmark"),
                             );
@@ -283,8 +283,23 @@ class HomeView extends GetView<HomeController> {
                                 onTap: () {
                                   // print("data");
                                 },
-                                leading: CircleAvatar(
-                                  child: Text("${index + 1}"),
+                                leading: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/list.png",
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "${index + 1}",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                  ),
                                 ),
                                 title: Text(
                                   dataBookmark["surah"]
@@ -294,7 +309,9 @@ class HomeView extends GetView<HomeController> {
                                 subtitle: Text(
                                     "Ayat ${dataBookmark["ayat"]} via ${dataBookmark["via"]}"),
                                 trailing: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    c.deleteBookmark(dataBookmark["id"]);
+                                  },
                                   icon: const Icon(
                                     Icons.delete,
                                     color: Colors.red,
