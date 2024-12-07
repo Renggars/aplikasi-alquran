@@ -1,4 +1,5 @@
 import 'package:aplikasi_alquran/app/constant/color.dart';
+import 'package:aplikasi_alquran/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../controllers/detail_juz_controller.dart';
 
 // ignore: use_key_in_widget_constructors
 class DetailJuzView extends GetView<DetailJuzController> {
+  final homeC = Get.find<HomeController>();
   final Map<String, dynamic>? dataMapPerJuz = Get.arguments;
 
   @override
@@ -141,13 +143,14 @@ class DetailJuzView extends GetView<DetailJuzController> {
                                     middleText: "Pilih jenis Bookmark",
                                     actions: [
                                       ElevatedButton(
-                                        onPressed: () {
-                                          c.addBookmark(
+                                        onPressed: () async {
+                                          await c.addBookmark(
                                             true,
                                             surah,
                                             verse,
                                             index,
                                           );
+                                          homeC.update();
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: appPurple),

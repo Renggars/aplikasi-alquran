@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:aplikasi_alquran/app/data/db/bookmark.dart';
 import 'package:get/get.dart';
-
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
@@ -15,7 +14,7 @@ class DetailSurahController extends GetxController {
 
   DatabaseManager database = DatabaseManager.instance;
 
-  void addBookmark(
+  Future<void> addBookmark(
       bool lastRead, DetailSurah surah, Verse ayat, int indexAyat) async {
     Database db = await database.db;
 

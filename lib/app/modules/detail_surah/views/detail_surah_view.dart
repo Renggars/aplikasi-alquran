@@ -1,6 +1,7 @@
 import 'package:aplikasi_alquran/app/constant/color.dart';
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart' as detail;
 import 'package:aplikasi_alquran/app/data/models/surah.dart';
+import 'package:aplikasi_alquran/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import '../controllers/detail_surah_controller.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   final Surah surah = Get.arguments;
+  final homeC = Get.find<HomeController>();
 
   DetailSurahView({super.key});
   @override
@@ -138,13 +140,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                     "Pilih jenis Bookmark",
                                                 actions: [
                                                   ElevatedButton(
-                                                    onPressed: () {
-                                                      c.addBookmark(
+                                                    onPressed: () async {
+                                                      await c.addBookmark(
                                                         true,
                                                         snapshot.data!,
                                                         ayat,
                                                         index,
                                                       );
+                                                      homeC.update();
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -160,6 +163,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                                         ayat,
                                                         index,
                                                       );
+                                                      homeC.update();
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
