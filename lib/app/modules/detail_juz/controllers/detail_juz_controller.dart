@@ -1,6 +1,8 @@
+import 'package:aplikasi_alquran/app/data/db/bookmark.dart';
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DetailJuzController extends GetxController {
   int index = 0;
@@ -8,6 +10,45 @@ class DetailJuzController extends GetxController {
   final player = AudioPlayer();
 
   Verse? lastVerse;
+
+  DatabaseManager database = DatabaseManager.instance;
+
+  void addBookmark(
+      bool lastRead, DetailSurah surah, Verse ayat, int indexAyat) async {
+    Database db = await database.db;
+
+    bool flagExist = false;
+
+    if (lastRead == true) {
+      await db.delete("bookmark", where: "last_read = 1");
+    } else {
+      List checkData = await db.query("bookmark",
+          columns: ["surah", "ayat", "juz", "via", "index_ayat", "last_read"],
+          where:
+              "surah = '${surah.name!.transliteration!.id!.replaceAll("'", "+")}' and ayat = ${ayat.number?.inSurah} and juz = ${ayat.meta?.juz} and via = 'juz' and index_ayat = $indexAyat and last_read = 0");
+
+      if (checkData.isNotEmpty) {
+        flagExist = true;
+      }
+    }
+
+    if (flagExist == false) {
+      db.insert("bookmark", {
+        "surah": surah.name!.transliteration!.id!.replaceAll("'", "+"),
+        "ayat": ayat.number?.inSurah,
+        "juz": ayat.meta?.juz,
+        "via": "juz",
+        "index_ayat": indexAyat,
+        "last_read": lastRead == true ? 1 : 0
+      });
+
+      Get.back(); // tutup dialog
+      Get.snackbar("Berhasil", "Berhasil ditambahkan ke bookmark");
+    } else {
+      Get.back(); // tutup dialog
+      Get.snackbar("Terjadi Kesalahan", "Bookmark sudah ada");
+    }
+  }
 
   void playAudio(Verse? ayat) async {
     if (ayat?.audio?.primary != null) {

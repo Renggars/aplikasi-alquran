@@ -135,7 +135,39 @@ class DetailJuzView extends GetView<DetailJuzController> {
                         GetBuilder<DetailJuzController>(
                           builder: (c) => Row(children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.defaultDialog(
+                                    title: "Bookmark",
+                                    middleText: "Pilih jenis Bookmark",
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          c.addBookmark(
+                                            true,
+                                            surah,
+                                            verse,
+                                            index,
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: appPurple),
+                                        child: Text("LAST READ"),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          c.addBookmark(
+                                            true,
+                                            surah,
+                                            verse,
+                                            index,
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: appPurple),
+                                        child: Text("BOOKMARK"),
+                                      ),
+                                    ]);
+                              },
                               icon: Icon(Icons.collections_bookmark_outlined),
                             ),
                             (verse.kondisiAudio == "stop")
