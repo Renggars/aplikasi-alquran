@@ -317,67 +317,84 @@ class HomeView extends GetView<HomeController> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
+                          controller.adaDataAllJuz.value = false;
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
+
                         if (!snapshot.hasData ||
                             snapshot.data!.isEmpty ||
                             snapshot.data == null) {
                           return const Center(
                             child: Text("Tidak ada data"),
                           );
-                        } else {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              Map<String, dynamic> dataMapPerJuz =
-                                  snapshot.data![index];
-                              return ListTile(
-                                onTap: () => Get.toNamed(
-                                  Routes.DETAIL_JUZ,
-                                  arguments: dataMapPerJuz,
-                                ),
-                                leading: Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(
-                                        "assets/images/list.png",
-                                      ),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "${index + 1}",
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                ),
-                                title: Text(
-                                  "Juz ${index + 1}",
-                                ),
-                                isThreeLine: true,
-                                subtitle: Column(
-                                  children: [
-                                    Text(
-                                      "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
-                                    ),
-                                    Text(
-                                      "Mulai dari ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
                         }
+
+                        controller.adaDataAllJuz.value = true;
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic> dataMapPerJuz =
+                                snapshot.data![index];
+                            return ListTile(
+                              onTap: () => Get.toNamed(
+                                Routes.DETAIL_JUZ,
+                                arguments: {"juz": dataMapPerJuz},
+                              ),
+                              leading: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/list.png",
+                                    ),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "${index + 1}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                "Juz ${index + 1}",
+                              ),
+                              isThreeLine: true,
+                              subtitle: Column(
+                                children: [
+                                  Text(
+                                    "Mulai dari ${(dataMapPerJuz["start"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                  ),
+                                  Text(
+                                    "Mulai dari ${(dataMapPerJuz["end"]["surah"] as detail.DetailSurah).name?.transliteration?.id} ayat ${(dataMapPerJuz["start"]["ayat"] as detail.Verse).number?.inSurah}",
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                     // Bookmark
                     GetBuilder<HomeController>(builder: (c) {
+                      if (c.adaDataAllJuz.isFalse) {
+                        return const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(height: 10),
+                              Text("Sedang memuat data juz..."),
+                            ],
+                          ),
+                        );
+                      }
+
                       return FutureBuilder<List<Map<String, dynamic>>>(
                         future: c.getBookmark(),
                         builder: (context, snapshot) {
@@ -401,16 +418,33 @@ class HomeView extends GetView<HomeController> {
                                   snapshot.data![index];
                               return ListTile(
                                 onTap: () {
-                                  Get.toNamed(
-                                    Routes.DETAIL_SURAH,
-                                    arguments: {
-                                      "name": dataBookmark["surah"]
-                                          .toString()
-                                          .replaceAll("+", "'"),
-                                      "number": dataBookmark["number_surah"],
-                                      "bookmark": dataBookmark,
-                                    },
-                                  );
+                                  switch (dataBookmark["via"]) {
+                                    case "juz":
+                                      Map<String, dynamic> dataMapPerJuz =
+                                          controller
+                                              .allJuz[dataBookmark["juz"] - 1];
+                                      Get.toNamed(
+                                        Routes.DETAIL_JUZ,
+                                        arguments: {
+                                          "juz": dataMapPerJuz,
+                                          "bookmark": dataBookmark,
+                                        },
+                                      );
+                                      break;
+                                    default:
+                                      Get.toNamed(
+                                        Routes.DETAIL_SURAH,
+                                        arguments: {
+                                          "name": dataBookmark["surah"]
+                                              .toString()
+                                              .replaceAll("+", "'"),
+                                          "number":
+                                              dataBookmark["number_surah"],
+                                          "bookmark": dataBookmark,
+                                        },
+                                      );
+                                      break;
+                                  }
                                 },
                                 leading: Container(
                                   height: 50,
