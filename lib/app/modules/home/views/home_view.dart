@@ -247,6 +247,7 @@ class HomeView extends GetView<HomeController> {
               Expanded(
                 child: TabBarView(
                   children: [
+                    // Surah
                     FutureBuilder<List<Surah>>(
                       future: controller.getAllSurah(),
                       builder: (context, snapshot) {
@@ -269,7 +270,10 @@ class HomeView extends GetView<HomeController> {
                               return ListTile(
                                 onTap: () => Get.toNamed(
                                   Routes.DETAIL_JUZ,
-                                  arguments: surah,
+                                  arguments: {
+                                    "name": surah.name!.transliteration!.id,
+                                    "number": surah.number!,
+                                  },
                                 ),
                                 leading: Container(
                                   height: 50,
@@ -307,6 +311,7 @@ class HomeView extends GetView<HomeController> {
                         }
                       },
                     ),
+                    // Juz
                     FutureBuilder<List<Map<String, dynamic>>>(
                       future: controller.getAllJuz(),
                       builder: (context, snapshot) {
@@ -371,6 +376,7 @@ class HomeView extends GetView<HomeController> {
                         }
                       },
                     ),
+                    // Bookmark
                     GetBuilder<HomeController>(builder: (c) {
                       return FutureBuilder<List<Map<String, dynamic>>>(
                         future: c.getBookmark(),
@@ -395,7 +401,16 @@ class HomeView extends GetView<HomeController> {
                                   snapshot.data![index];
                               return ListTile(
                                 onTap: () {
-                                  // print("data");
+                                  Get.toNamed(
+                                    Routes.DETAIL_SURAH,
+                                    arguments: {
+                                      "name": dataBookmark["surah"]
+                                          .toString()
+                                          .replaceAll("+", "'"),
+                                      "number": dataBookmark["number_surah"],
+                                      "bookmark": dataBookmark,
+                                    },
+                                  );
                                 },
                                 leading: Container(
                                   height: 50,
