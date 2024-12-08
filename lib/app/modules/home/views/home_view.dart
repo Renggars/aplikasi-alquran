@@ -150,15 +150,35 @@ class HomeView extends GetView<HomeController> {
                                 )
                               }
                           },
-                          onTap: () => {
-                            if (lastRead != null)
-                              {
-                                // bisa di arahkan ke page last read
-                                Get.toNamed(
-                                  Routes.LAST_READ,
-                                  arguments: lastRead,
-                                )
+                          onTap: () {
+                            if (lastRead != null) {
+                              // bisa di arahkan ke page detail surah / juz
+                              switch (lastRead["via"]) {
+                                case "juz":
+                                  Map<String, dynamic> dataMapPerJuz =
+                                      controller.allJuz[lastRead["juz"] - 1];
+                                  Get.toNamed(
+                                    Routes.DETAIL_JUZ,
+                                    arguments: {
+                                      "juz": dataMapPerJuz,
+                                      "bookmark": lastRead,
+                                    },
+                                  );
+                                  break;
+                                default:
+                                  Get.toNamed(
+                                    Routes.DETAIL_SURAH,
+                                    arguments: {
+                                      "name": lastRead["surah"]
+                                          .toString()
+                                          .replaceAll("+", "'"),
+                                      "number": lastRead["number_surah"],
+                                      "bookmark": lastRead,
+                                    },
+                                  );
+                                  break;
                               }
+                            }
                           },
                           borderRadius: BorderRadius.circular(20),
                           child: Stack(
