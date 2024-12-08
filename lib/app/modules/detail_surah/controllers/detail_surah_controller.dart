@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:aplikasi_alquran/app/data/models/detail_surah.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DetailSurahController extends GetxController {
+  AutoScrollController scrollC = AutoScrollController();
   final player = AudioPlayer();
 
   Verse? lastVerse;

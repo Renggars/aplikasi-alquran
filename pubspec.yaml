@@ -41,6 +41,7 @@ dependencies:
   just_audio: ^0.9.42
   sqflite: ^2.4.1
   path_provider: ^2.1.5
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:
